@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import DevIoLanding from './pages/DevIoLanding';
+import DevIoLanding from './pages/Landing';
 import Login from './pages/Login';
 import './App.css';
 
