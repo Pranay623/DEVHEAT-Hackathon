@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../common/Navbar';
+import ImageSrc from '../../public/images/login/ref@2x.jpg';
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -9,20 +9,26 @@ const Login: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login logic here
     console.log('Login attempt with:', { email, password });
-    // For demo purposes, redirect to dashboard after login
     navigate('/dashboard');
   };
 
   return (
-    <div className="bg-black text-white min-h-screen">
-      <Navbar />
-      
-      <div className="container mx-auto px-4 sm:px-8 md:px-12 lg:px-20 py-16">
-        <div className="max-w-md mx-auto">
+    <div className="min-h-screen bg-[#030303] text-white flex items-center">
+      <div className="flex flex-col md:flex-row w-full ">
+        {/* Left Section: Image */}
+        <div className="hidden md:flex flex-1">
+          <img
+            src={ImageSrc}
+            alt="Login Background"
+            className="w-full h-full object-cover rounded-l-md"
+          />
+        </div>
+
+        {/* Right Section: Login Form */}
+        <div className="flex-1 bg-[#050505] rounded-md p-8 md:p-12 flex flex-col justify-center">
           <h1 className="text-3xl font-bold text-center mb-8">Login to MockPrep</h1>
-          
+
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="email" className="block text-sm font-medium mb-2">
@@ -37,7 +43,7 @@ const Login: React.FC = () => {
                 required
               />
             </div>
-            
+
             <div>
               <label htmlFor="password" className="block text-sm font-medium mb-2">
                 Password
@@ -51,7 +57,7 @@ const Login: React.FC = () => {
                 required
               />
             </div>
-            
+
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <input
@@ -63,14 +69,14 @@ const Login: React.FC = () => {
                   Remember me
                 </label>
               </div>
-              
+
               <div className="text-sm">
                 <a href="#" className="text-gray-400 hover:text-white">
                   Forgot password?
                 </a>
               </div>
             </div>
-            
+
             <div>
               <button
                 type="submit"
@@ -80,7 +86,7 @@ const Login: React.FC = () => {
               </button>
             </div>
           </form>
-          
+
           <div className="mt-8 text-center">
             <p className="text-gray-400">
               Don't have an account?{' '}
