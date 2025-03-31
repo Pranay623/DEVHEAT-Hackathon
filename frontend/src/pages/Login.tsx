@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import ImageSrc from '../../public/images/login/ref@2x.jpg';
+
+// import ImageSrc from '../../public/images/login/ref2x.webp'
+
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -15,11 +17,13 @@ const Login: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#030303] text-white flex items-center">
-      <div className="flex flex-col md:flex-row w-full ">
+
+      <div className="flex flex-col md:flex-row w-full mx-auto lg:mx-20 ">
         {/* Left Section: Image */}
         <div className="hidden md:flex flex-1">
           <img
-            src={ImageSrc}
+            src='/images/login/ref2x.webp'
+
             alt="Login Background"
             className="w-full h-full object-cover rounded-l-md"
           />
