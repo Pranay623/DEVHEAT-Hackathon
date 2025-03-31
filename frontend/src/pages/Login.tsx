@@ -92,7 +92,7 @@ const LoginSignup: React.FC = () => {
                     <div>
                       <button
                         type="submit"
-                        className="w-full bg-white text-black rounded-full px-4 py-3 font-semibold"
+                        className="w-full bg-white text-black rounded-full px-4 py-2 font-semibold"
                       >
                         LOGIN
                       </button>
@@ -100,7 +100,9 @@ const LoginSignup: React.FC = () => {
                   </form>
 
                   <div className="mt-4 text-center">
-                    <p>OR</p>
+                    <p
+                    className='mb-4'
+                    >OR</p>
                     <GoogleLogin
                     onSuccess={handleGoogleSuccess}
                     onError={handleGoogleFailure}
@@ -180,7 +182,7 @@ const LoginSignup: React.FC = () => {
                     <div>
                       <button
                         type="submit"
-                        className="w-full bg-white text-black rounded-full px-4 py-3 font-semibold"
+                        className="w-full bg-white text-black rounded-full px-4 py-2 font-semibold"
                       >
                         SIGN UP
                       </button>
@@ -188,7 +190,9 @@ const LoginSignup: React.FC = () => {
                   </form>
 
                   <div className="mt-4 text-center">
-                    <p>OR</p>
+                    <p
+                    className='mb-4'
+                    >OR</p>
                     <GoogleLogin
                       onSuccess={handleGoogleSuccess}
                       onError={handleGoogleFailure}
