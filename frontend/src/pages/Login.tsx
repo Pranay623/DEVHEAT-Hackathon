@@ -13,22 +13,71 @@ const LoginSignup: React.FC = () => {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isLogin) {
-      console.log('Login attempt with:', { email, password });
-      navigate('/dashboard');
-    } else {
-      console.log('Signup attempt with:', { name, email, password });
-      navigate('/welcome');
+  
+    const endpoint = isLogin
+      ? 'https://devheat-hackathon-14ll.vercel.app/api/auth/login'
+      : 'https://devheat-hackathon-14ll.vercel.app/api/auth/register';
+  
+    const payload = isLogin
+      ? { email, password }
+      : { name, email, password };
+  
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        console.log(isLogin ? 'Login Successful' : 'Signup Successful', data);
+        navigate(isLogin ? '/dashboard' : '/welcome');
+      } else {
+        console.error('Error:', data.message);
+        alert(`Error: ${data.message}`);
+      }
+    } catch (error) {
+      console.error('Request Failed:', error);
+      alert('Something went wrong. Please try again.');
     }
   };
+  
 
-  const handleGoogleSuccess = (credentialResponse: any) => {
-    const decoded = jwtDecode(credentialResponse.credential);
-    console.log('Google Login Success:', decoded);
-    navigate('/dashboard'); // Redirect to dashboard after successful login
+  const handleGoogleSuccess = async (credentialResponse: any) => {
+    const decoded: any = jwtDecode(credentialResponse.credential);
+    const { email, name} = decoded;
+  
+    try {
+      // Check if user exists in the database
+      const response = await fetch('http://localhost:5000/api/auth/google-login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, name}),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        console.log('Google Login Successful:', data);
+        navigate('/dashboard'); 
+      } else {
+        console.error('Error:', data.message);
+        alert(`Error: ${data.message}`);
+      }
+    } catch (error) {
+      console.error('Request Failed:', error);
+      alert('Something went wrong. Please try again.');
+    }
   };
+  
 
   const handleGoogleFailure = () => {
     console.error('Google Login Failed');
