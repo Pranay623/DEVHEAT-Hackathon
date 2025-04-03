@@ -77,4 +77,24 @@ router.post("/login", loginRateLimiter, async (req, res) => {
 });
 
 
+router.post('/google-login', async (req, res) => {
+  const { email, name} = req.body;
+
+  try {
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      // If user does not exist, register them
+      user = new User({ name, email, password: '',profileCompleted: true });
+      user.profileCompleted = true; // Mark as completed
+      await user.save();
+    }
+
+    // Create a session or token for authentication (if required)
+    res.status(200).json({ message: 'Login Successful', user });
+  } catch (error) {
+    res.status(500).json({ message: 'Server Error', error });
+  }
+});
+
 export default router;
