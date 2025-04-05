@@ -4,12 +4,20 @@ import {
   Home, BarChart2, FileText, Award, User, Settings, 
   LogOut, ChevronLeft, ChevronRight
 } from 'react-feather';
+import { useNavigate } from 'react-router-dom';
+
+
 
 const Sidebar = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [isLargeScreen, setIsLargeScreen] = useState(false);
   const location = useLocation();
-  
+  const navigate = useNavigate();
+
+const handleLogout = () => {
+  localStorage.clear();
+  navigate('/');
+};
   // Check screen size on mount and when resized
   useEffect(() => {
     const checkScreenSize = () => {
@@ -138,13 +146,14 @@ const Sidebar = () => {
           </div>
           
           {/* Logout button */}
-          <Link 
-            to="/logout"
+          <button 
+            onClick={handleLogout}
             className="flex items-center mt-4 text-gray-400 hover:text-white transition-colors px-2"
           >
             <LogOut size={16} />
             {shouldShowText && <span className="ml-4 text-sm">Log out</span>}
-          </Link>
+          </button>
+
         </div>
       </div>
     </>

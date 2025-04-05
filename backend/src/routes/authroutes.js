@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { User } from "../models/User.js";
 import expressRateLimit from "express-rate-limit";
+import authenticateUser from "../middleware/authenticate.js";
 
 const router = express.Router();
 
@@ -40,9 +41,10 @@ const createRateLimiter = (maxRequests, windowMinutes) => {
 
 const loginRateLimiter = createRateLimiter(5, 15);
 
-router.post("/login", loginRateLimiter, async (req, res) => {
+router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
+
     if (!email || !password) {
       return res.status(400).json({ message: "Email and password are required" });
     }
@@ -51,10 +53,12 @@ router.post("/login", loginRateLimiter, async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid email or password" });
     }
+
     const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
@@ -69,12 +73,16 @@ router.post("/login", loginRateLimiter, async (req, res) => {
     res.status(200).json({
       message: "Login successful",
       token,
+      userId: user._id,
       role: user.role,
+      WizardCompleted: user.profileCompleted,
     });
+
   } catch (error) {
     res.status(500).json({ message: "Internal server error", error: error.message });
   }
 });
+
 
 
 router.post('/google-login', async (req, res) => {
