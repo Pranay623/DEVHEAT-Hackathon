@@ -1,7 +1,13 @@
 import React from 'react';
 import { FileText, Clock } from 'react-feather';
+import { useNavigate } from 'react-router-dom';
 
 const MockTestCard: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleStartTest = () => {
+    navigate('/free-mock-test');
+  };
   return (
     <div className="bg-gradient-to-r from-blue-900/30 to-blue-700/30 p-4 rounded-xl shadow-lg border border-blue-900/50">
       <div className="flex items-start justify-between mb-3">
@@ -27,7 +33,9 @@ const MockTestCard: React.FC = () => {
           <span className="text-xs bg-blue-900/40 text-blue-300 px-1.5 py-0.5 rounded-full">JS</span>
           <span className="text-xs bg-blue-900/40 text-blue-300 px-1.5 py-0.5 rounded-full">Design</span>
         </div>
-        <button className="w-full bg-blue-700 hover:bg-blue-600 text-white text-sm py-1.5 rounded-lg transition-colors">
+        <button
+        onClick={handleStartTest}
+        className="w-full bg-blue-700 hover:bg-blue-600 text-white text-sm py-1.5 rounded-lg transition-colors">
           Start Test Now
         </button>
       </div>

@@ -1,7 +1,14 @@
 import React from 'react';
 import { MessageCircle } from 'react-feather';
+import { useNavigate } from 'react-router-dom';
 
 const LearnWithAICard: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleStartLearning = () => {
+    navigate('/learn-with-ai');
+  };
+
   return (
     <div className="bg-gradient-to-r from-emerald-900/30 to-teal-700/30 p-4 rounded-xl shadow-lg border border-emerald-900/50 h-[232px] flex flex-col">
       <div className="flex items-start justify-between mb-2">
@@ -40,7 +47,10 @@ const LearnWithAICard: React.FC = () => {
         </button>
       </div>
       
-      <button className="w-full bg-emerald-700 hover:bg-emerald-600 text-white text-sm py-1.5 rounded-lg transition-colors">
+      <button 
+        onClick={handleStartLearning}
+        className="w-full bg-emerald-700 hover:bg-emerald-600 text-white text-sm py-1.5 rounded-lg transition-colors"
+      >
         Start Learning Session
       </button>
     </div>
