@@ -5,6 +5,7 @@ import authRoutes from "./src/routes/authroutes.js";
 import userRoutes from "./src/routes/userRoutes.js"; 
 import wizardRoutes from "./src/routes/complete-profile.js";
 import addcreditRoutes from "./src/routes/addcredit.js";
+import creditsRoutes from "./src/routes/credits.js";
 
 
 const app = express();
@@ -22,6 +23,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/wizard", wizardRoutes);
 app.use("/api/wheel", addcreditRoutes);
+app.use("/api/credits", creditsRoutes);
 
 // Default Route
 app.get("/", (req, res) => {
