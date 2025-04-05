@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Bell, Search, Activity, FileText, Command, Zap } from 'react-feather';
 import DashboardLayout from '../components/DashboardLayout';
@@ -9,9 +9,34 @@ import MockTestCard from '../components/dashboard/MockTestCard';
 import LearnWithAICard from '../components/dashboard/LearnWithAICard';
 import AIRecommendCard from '../components/dashboard/AIRecommendCard';
 import UserProfileCard from '../components/dashboard/UserProfileCard';
+import WizardModal from '@/components/WizardModal';
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
+  const [wizardCompleted, setWizardCompleted] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const wizardValue = localStorage.getItem('wizard'); // expects 'true' or 'false'
+    if (wizardValue === 'true') {
+      setWizardCompleted(true);
+    } else {
+      setWizardCompleted(false);
+    }
+  }, []);
+
+  const handleWizardComplete = (answers: any) => {
+    console.log('Wizard answers:', answers);
+    localStorage.setItem('wizard', 'true');
+    setWizardCompleted(true);
+    // You can also POST `answers` to your backend API here.
+  };
+
+  if (wizardCompleted === null) return null;
+
+  // Show Wizard Modal if not completed
+  if (!wizardCompleted) {
+    return <WizardModal onComplete={handleWizardComplete} />;
+  }
 
   return (
     <DashboardLayout>
