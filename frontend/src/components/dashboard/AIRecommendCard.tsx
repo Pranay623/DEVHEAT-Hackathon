@@ -1,5 +1,6 @@
 import React from 'react';
 import { Zap } from 'react-feather';
+import { useNavigate } from 'react-router-dom';
 
 const recommendations = [
   {
@@ -19,6 +20,10 @@ const recommendations = [
 ];
 
 const AIRecommendCard: React.FC = () => {
+  const navigate = useNavigate();
+  const handleClick = () => {
+    navigate('/recommend');}
+
   return (
     <div className="bg-[#1e1e1e] p-4 rounded-xl shadow-lg">
       <div className="flex justify-between items-center mb-3">
@@ -47,7 +52,7 @@ const AIRecommendCard: React.FC = () => {
         ))}
       </div>
       
-      <button className="w-full mt-2 text-md text-purple-400 hover:text-purple-300">
+      <button className="w-full mt-2 text-md text-purple-400 hover:text-purple-300" onClick={handleClick}>
         View all recommendations →
       </button>
     </div>
