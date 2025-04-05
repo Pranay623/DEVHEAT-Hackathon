@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 const SpinWheel = () => {
   const [result, setResult] = useState<string | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
   const sectors = [
     { color: "#4b0082", label: "50" },
     { color: "#6a0dad", label: "100" },
@@ -15,33 +16,21 @@ const SpinWheel = () => {
 
   useEffect(() => {
     if (!result) return;
-  
     const userId = localStorage.getItem("userID");
     if (!userId) {
-      console.error("User ID not found in local storage");
+      console.error("User ID not found");
       return;
     }
-  
     fetch("https://devheat-hackathon-14ll.vercel.app/api/wheel/spin-result", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ userId, reward: Number(result),}),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, reward: Number(result) }),
     })
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to send spin result");
-        return res.json();
-      })
-      .then((data) => {
-        console.log("Spin result submitted successfully:", data);
-      })
-      .catch((err) => {
-        console.error("Error submitting spin result:", err);
-      });
+      .then((res) => res.json())
+      .then((data) => console.log("Submitted:", data))
+      .catch((err) => console.error("Submit error:", err));
   }, [result]);
 
-  
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
@@ -49,11 +38,7 @@ const SpinWheel = () => {
 
     const tot = sectors.length;
     const rand = (m: number, M: number) => Math.random() * (M - m) + m;
-
-    let ang = 0;
-    let angVel = 0;
-    let isSpinning = false;
-    let animationFrame: number;
+    let ang = 0, angVel = 0, isSpinning = false, animationFrame: number;
 
     const drawSector = (sector: any, i: number) => {
       const angStart = (2 * Math.PI * i) / tot;
@@ -70,9 +55,9 @@ const SpinWheel = () => {
       ctx.rotate((angStart + angEnd) / 2);
       ctx.textAlign = "right";
       ctx.fillStyle = "#fff";
-      ctx.shadowColor = "#9b59b6";
+      ctx.shadowColor = "#fff";
       ctx.shadowBlur = 15;
-      ctx.font = "600 28px 'Poppins', sans-serif";
+      ctx.font = "bold 26px 'Poppins', sans-serif";
       ctx.fillText(sector.label, 215, 10);
       ctx.restore();
     };
@@ -90,8 +75,7 @@ const SpinWheel = () => {
     const getCurrentSector = () => {
       const deg = (ang * 180) / Math.PI;
       const adjustedDeg = (deg + 360) % 360;
-      const sectorAngle = 360 / tot;
-      const index = Math.floor((360 - adjustedDeg) / sectorAngle) % tot;
+      const index = Math.floor((360 - adjustedDeg) / (360 / tot)) % tot;
       return sectors[index];
     };
 
@@ -99,7 +83,6 @@ const SpinWheel = () => {
       ang += angVel;
       ang %= 2 * Math.PI;
       angVel *= 0.985;
-
       draw();
 
       if (angVel < 0.002 && isSpinning) {
@@ -132,87 +115,89 @@ const SpinWheel = () => {
   }, []);
 
   return (
-    <div className="w-full h-screen flex flex-col items-center justify-center bg-[#0d0d1a] relative overflow-hidden">
-      {/* Glowing Dots */}
-      {[...Array(40)].map((_, i) => (
+    <div className="w-full h-screen flex flex-col items-center justify-center bg-[#0d0d1a] relative overflow-hidden font-poppins">
+      {/* Background Video */}
+      <video
+        width="100%" height="100%" autoPlay loop muted
+        className="absolute top-0 left-0 object-cover z-0 opacity-40"
+      >
+        <source src="https://res.cloudinary.com/dll6vk0kp/video/upload/v1743856313/video_atwe3t.mp4" type="video/mp4" />
+      </video>
+
+      {/* Floating Sparkles */}
+      {[...Array(30)].map((_, i) => (
         <motion.div
           key={i}
-          className="absolute w-1 h-1 rounded-full bg-purple-500 opacity-30 blur-sm"
+          className="absolute w-[6px] h-[6px] rounded-full bg-purple-400 blur-sm"
           initial={{ opacity: 0, scale: 0 }}
           animate={{
             x: Math.random() * window.innerWidth,
             y: Math.random() * window.innerHeight,
-            opacity: [0.1, 0.3, 0.6, 0.2],
-            scale: [0.5, 1.2, 0.8, 1],
+            opacity: [0.2, 0.6, 0.1],
+            scale: [1, 1.5, 1],
           }}
           transition={{
-            duration: 8 + Math.random() * 4,
+            duration: 10 + Math.random() * 5,
             repeat: Infinity,
             repeatType: "reverse",
             ease: "easeInOut",
-            delay: Math.random() * 3,
+            delay: Math.random() * 2,
           }}
         />
       ))}
 
       {/* Title */}
       <motion.h1
-        className="text-white text-2xl md:text-3xl font-semibold mb-8 tracking-wide"
-        initial={{ opacity: 0, y: -20 }}
+        className="text-white text-3xl md:text-4xl font-bold mb-8 tracking-wider text-center drop-shadow-[0_0_15px_#ab47bc]"
+        initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
+        transition={{ duration: 0.8 }}
       >
-        Spin the Wheel to Earn Credit
+        ✨ Spin the Magical Wheel & Win Credits! ✨
       </motion.h1>
 
       {/* Wheel */}
       <motion.div
         className="relative inline-block"
-        initial={{ opacity: 0, scale: 0.8, y: 50 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.6 }}
       >
         {/* Arrow */}
         <div className="absolute z-20 left-[calc(100%-0.5rem)] top-1/2 -translate-y-1/2 ml-[-10.5rem]">
-            <div
-                className="w-0 h-0 
-                border-t-[12px] border-t-transparent
-                border-b-[12px] border-b-transparent
-                border-l-[20px] border-l-yellow-400 drop-shadow-[0_0_6px_#facc15]"
-            ></div>
-            </div>
-
+          <div className="w-0 h-0 border-t-[12px] border-t-transparent border-b-[12px] border-b-transparent border-l-[20px] border-l-yellow-400 drop-shadow-[0_0_6px_#facc15]" />
+        </div>
 
         {/* Canvas */}
         <canvas
           ref={canvasRef}
           width="500"
           height="500"
-          className="block rounded-full bg-[#1b1b2f] shadow-[0_0_50px_#9b59b6]"
-        ></canvas>
+          className="block rounded-full bg-[#1b1b2f] shadow-[0_0_50px_#ab47bc]"
+        />
 
         {/* Spin Button */}
         <motion.div
           id="spin"
-          whileTap={{ scale: 0.95 }}
-          className="absolute top-1/2 left-1/2 w-[30%] h-[30%] -translate-x-1/2 -translate-y-1/2 flex items-center justify-center font-semibold text-white text-lg rounded-full cursor-pointer transition duration-700
+          whileTap={{ scale: 0.92 }}
+          className="absolute top-1/2 left-1/2 w-[30%] h-[30%] -translate-x-1/2 -translate-y-1/2 flex items-center justify-center text-white text-lg font-bold rounded-full cursor-pointer
           bg-gradient-to-br from-indigo-700 via-purple-600 to-purple-800
-          shadow-[0_0_15px_#ab47bc,0_0_25px_#8e24aa]
-          border-4 border-[#ab47bc]"
+          border-4 border-purple-500 shadow-[0_0_25px_#ab47bc]
+          animate-pulse transition duration-300 hover:scale-105"
         >
           SPIN
         </motion.div>
       </motion.div>
 
-      {/* Result */}
+      {/* Result Message */}
       {result && (
         <motion.div
-          className="mt-10 text-xl font-semibold text-white bg-purple-800 px-6 py-3 rounded-xl shadow-lg border border-purple-400"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          className="mt-12 text-2xl font-semibold text-yellow-300 bg-purple-900 px-8 py-4 rounded-2xl shadow-xl border border-purple-400 backdrop-blur-md"
+          initial={{ opacity: 0, y: 20, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
         >
-          🎉 You got <span className="text-yellow-300">{result}</span> credits!
+          🎉 You earned <span className="text-yellow-400 drop-shadow-[0_0_5px_#facc15]">{result}</span> credits!
         </motion.div>
       )}
     </div>
