@@ -43,15 +43,15 @@ const MockTestCard: React.FC = () => {
       <div className="flex justify-between text-md">
         <div>
           <p className="text-gray-400">Available</p>
-          <p className="text-white font-bold">12</p>
+          <p className="text-white font-bold">8</p>
         </div>
         <div>
           <p className="text-gray-400">Completed</p>
-          <p className="text-white font-bold">5</p>
+          <p className="text-white font-bold">0</p>
         </div>
         <div>
           <p className="text-gray-400">Avg. Score</p>
-          <p className="text-white font-bold">72%</p>
+          <p className="text-white font-bold">0%</p>
         </div>
       </div>
     </div>
