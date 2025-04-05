@@ -1,7 +1,13 @@
 import React from 'react';
 import { Plus, Gift } from 'react-feather';
+import { useNavigate } from 'react-router-dom';
+
 
 const CreditsCard: React.FC = () => {
+  const navigate = useNavigate();
+  const handlepurchaseclick = () => {
+    navigate('/spinwheel')
+  }
   return (
     <div className="bg-gradient-to-r from-purple-900/30 to-purple-700/30 p-4 rounded-xl shadow-lg border border-purple-900/50 h-[232px]">
       <div className="flex justify-between items-start mb-2">
@@ -27,7 +33,10 @@ const CreditsCard: React.FC = () => {
         <span>500 credits</span>
       </div>
       
-      <button className="flex items-center justify-center w-full bg-purple-700 hover:bg-purple-600 text-white py-1.5 px-3 text-sm rounded-lg transition-colors mt-auto">
+      <button
+        onClick={handlepurchaseclick}
+        className="flex items-center justify-center w-full bg-purple-700 hover:bg-purple-600 text-white py-1.5 px-3 text-sm rounded-lg transition-colors mt-auto"
+      >
         <Plus size={14} className="mr-1" />
         Purchase Credits
       </button>
