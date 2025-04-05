@@ -4,6 +4,8 @@ import cookieParser from "cookie-parser";
 import authRoutes from "./src/routes/authroutes.js";
 import userRoutes from "./src/routes/userRoutes.js"; 
 import wizardRoutes from "./src/routes/complete-profile.js";
+import addcreditRoutes from "./src/routes/addcredit.js";
+
 
 const app = express();
 
@@ -19,6 +21,7 @@ app.use(cookieParser());
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/wizard", wizardRoutes);
+app.use("/api/wheel", addcreditRoutes);
 
 // Default Route
 app.get("/", (req, res) => {

@@ -41,7 +41,7 @@ const createRateLimiter = (maxRequests, windowMinutes) => {
 
 const loginRateLimiter = createRateLimiter(5, 15);
 
-router.post("/login", async (req, res) => {
+router.post("/login",loginRateLimiter, async (req, res) => {
   try {
     const { email, password } = req.body;
 

@@ -33,6 +33,10 @@ const userSchema = new mongoose.Schema({
     level: { 
         type: String, enum: ["beginner", "intermediate", "advanced"] 
     }, 
+    credits: {
+        type: Number,
+        default: 300,
+    }
 }, { timestamps: true });
 
 export const User = mongoose.model("User", userSchema);
