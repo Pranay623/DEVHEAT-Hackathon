@@ -7,7 +7,7 @@ import Dashboard from './pages/Dashboard';
 import ProfilePage from './pages/profile';
 import SpinWheel from './components/Spinthewheel';
 import Recommend from './components/Recommend';
-
+import PricingPlans from './pages/pricing';
 
 const App: React.FC = () => {
   return (
@@ -19,7 +19,7 @@ const App: React.FC = () => {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/spinwheel" element={<SpinWheel />} />
         <Route path="/recommend" element={<Recommend />} />
-
+        <Route path="/pricing" element={<PricingPlans />} />
         {/* Add other routes as needed */}
       </Routes>
     </BrowserRouter>
