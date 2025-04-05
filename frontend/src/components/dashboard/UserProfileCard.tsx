@@ -1,7 +1,10 @@
 import React from 'react';
 import { User, Award, Calendar, ChevronRight } from 'react-feather';
+import { useNavigate } from 'react-router-dom';
+
 
 const UserProfileCard: React.FC = () => {
+  const navigate = useNavigate();
   return (
     <div className="bg-gradient-to-br from-gray-900 to-[#1e1e1e] p-4 rounded-xl shadow-lg border border-gray-800/50 h-[232px] flex flex-col">
       <div className="flex items-center space-x-3 mb-3">
@@ -37,7 +40,10 @@ const UserProfileCard: React.FC = () => {
         </div>
       </div>
       
-      <button className="w-full flex justify-between items-center bg-black/30 hover:bg-black/50 text-white py-1.5 px-3 rounded-lg border border-gray-700 transition-all text-sm mt-auto">
+      <button 
+        className="w-full flex justify-between items-center bg-black/30 hover:bg-black/50 text-white py-1.5 px-3 rounded-lg border border-gray-700 transition-all text-sm mt-auto"
+        onClick={() => navigate('/profile')} // Navigate to profile page
+      >
         <span className="font-medium">Go to Profile</span>
         <ChevronRight size={16} />
       </button>

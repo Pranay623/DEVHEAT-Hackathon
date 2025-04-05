@@ -19,6 +19,9 @@ const LoginSignup: React.FC = () => {
     const endpoint = isLogin
       ? 'https://devheat-hackathon-14ll.vercel.app/api/auth/login'
       : 'https://devheat-hackathon-14ll.vercel.app/api/auth/register';
+    // const endpoint = isLogin
+    // ? 'http://localhost:5000/api/auth/login'
+    // : 'http://localhost:5000/api/auth/register';
   
     const payload = isLogin
       ? { email, password }
@@ -38,6 +41,9 @@ const LoginSignup: React.FC = () => {
       if (response.ok) {
         console.log(isLogin ? 'Login Successful' : 'Signup Successful', data);
         navigate(isLogin ? '/dashboard' : '/welcome');
+        localStorage.setItem('token', data.token); // Store the token in local storage
+        localStorage.setItem('userID',data.userId)
+        localStorage.setItem('wizard',data.WizardCompleted)
       } else {
         console.error('Error:', data.message);
         alert(`Error: ${data.message}`);
