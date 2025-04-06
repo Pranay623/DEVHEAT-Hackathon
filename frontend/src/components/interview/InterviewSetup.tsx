@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { ChevronRight, HelpCircle } from 'react-feather';
 import { Button } from '../ui/button';
 
-type InterviewType = 'text' | 'voice' | 'behavioral' | 'technical';
+type InterviewType = 'logical' | 'voice' | 'behavioral' | 'technical';
 type ExperienceLevel = 'fresher' | 'intermediate' | 'experienced';
 
 interface InterviewSetupProps {
@@ -23,17 +23,23 @@ const InterviewSetup: React.FC<InterviewSetupProps> = ({ onComplete, remainingCr
   const [interviewType, setInterviewType] = useState<InterviewType>('behavioral');
   const [step, setStep] = useState<number>(1);
   const userId = localStorage.getItem('userID'); 
+  const [customRole, setCustomRole] = useState('');
+const [customCompany, setCustomCompany] = useState('');
   
-  const handleNextStep = () => {
-    if (step === 1 && role && experience && company) {
-      setStep(2);
-    }
-  };
+  const isCustomRoleValid = role !== 'other' || (role === 'other' && role.trim().length > 0);
+const isCustomCompanyValid = company !== 'other' || (company === 'other' && company.trim().length > 0);
+
+const handleNextStep = () => {
+  if (step === 1 && isCustomRoleValid && experience && isCustomCompanyValid) {
+    setStep(2);
+  }
+};
   
   const handleSubmit = async () => {
     try {
       // Call the deduct API before continuing
-      const res = await fetch("https://devheat-hackathon-14ll.vercel.app/api/wheel/deduct-credits", {
+      // const res = await fetch("https://devheat-hackathon-14ll.vercel.app/api/wheel/deduct-credits", {
+        const res = await fetch("https://devheat-hackathon-14ll.vercel.app/api/wheel/deduct-credits", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -54,9 +60,9 @@ const InterviewSetup: React.FC<InterviewSetupProps> = ({ onComplete, remainingCr
   
       // Proceed only if deduction was successful
       onComplete({
-        role,
+        role: role === 'other' ? customRole : role,
         experience,
-        company,
+        company: company === 'other' ? customCompany : company,
         interviewType
       });
       
@@ -261,20 +267,20 @@ const InterviewSetup: React.FC<InterviewSetupProps> = ({ onComplete, remainingCr
               <div className="space-y-4">
                 {/* Text-based interview */}
                 <label className={`block rounded-lg p-4 border cursor-pointer transition-colors ${
-                  interviewType === 'text' 
+                  interviewType === 'logical' 
                     ? 'bg-purple-900/20 border-purple-500' 
                     : 'bg-[#121212] border-gray-700 hover:border-gray-500'
                 }`}>
                   <div className="flex items-center justify-between">
                     <div>
-                      <div className="text-white font-medium">Text-Based Mock Interview</div>
+                      <div className="text-white font-medium">Logical-Based Mock Interview</div>
                       <div className="text-gray-400 text-sm mt-1">Type your answers to the questions</div>
                     </div>
                     <input
                       type="radio"
                       name="interviewType"
-                      checked={interviewType === 'text'}
-                      onChange={() => setInterviewType('text')}
+                      checked={interviewType === 'logical'}
+                      onChange={() => setInterviewType('logical')}
                       className="text-purple-600 focus:ring-purple-500 h-4 w-4"
                     />
                   </div>

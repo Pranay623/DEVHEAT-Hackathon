@@ -8,9 +8,10 @@ import InterviewCompletion from '../components/interview/InterviewCompletion';
 import InterviewFeedback from '../components/interview/InterviewFeedback';
 import { Clock, AlertCircle } from 'react-feather';
 
+
 // Types
 type InterviewStep = 'setup' | 'session' | 'completion' | 'feedback';
-type InterviewType = 'text' | 'voice' | 'behavioral' | 'technical';
+type InterviewType = 'logical' | 'voice' | 'behavioral' | 'technical';
 type ExperienceLevel = 'fresher' | 'intermediate' | 'experienced';
 
 interface SetupData {
@@ -53,6 +54,7 @@ const MockInterviewScreen: React.FC = () => {
   const [remainingCredits, setRemainingCredits] = useState<number>(300);
   
   const userId = localStorage.getItem('userID');
+  
 
   // Fetch user credits on component mount
   useEffect(() => {
@@ -79,9 +81,17 @@ const MockInterviewScreen: React.FC = () => {
     try {
       const questions: Question[] = [];
   
-      // Fetch 5 questions dynamically from the API (or more if needed)
+      // Determine API endpoint based on interviewType
+      let apiUrl = 'https://job-e0jn.onrender.com/mock-interview'; // default for technical
+      if (data.interviewType === 'behavioral') {
+        apiUrl = 'https://behaviouranalysisagent.onrender.com/behavioral-interview';
+      } else if (data.interviewType === 'logical') {
+        apiUrl = 'https://logiaclagent-1.onrender.com/logical-ability';
+      }
+  
+      // Fetch 5 questions dynamically
       for (let i = 0; i < 5; i++) {
-        const response = await fetch('https://job-e0jn.onrender.com/mock-interview', {
+        const response = await fetch(apiUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -96,11 +106,29 @@ const MockInterviewScreen: React.FC = () => {
         const result = await response.json();
   
         if (response.ok && result.question) {
+          const rawQuestion = result.question;
+
+            // Basic cleanup utility
+            const formatQuestionText = (text: string) => {
+              // Remove markdown-style **bold** markers
+              let cleaned = text.replace(/\*\*(.*?)\*\*/g, '$1');
+
+              // Replace multiple newlines with just two
+              cleaned = cleaned.replace(/\n{3,}/g, '\n\n');
+
+              // Trim leading/trailing spaces
+              cleaned = cleaned.trim();
+
+              return cleaned;
+            };
+
+            const formattedText = formatQuestionText(rawQuestion);
+
           questions.push({
             id: i + 1,
-            text: result.question,
-            category: 'technical', // You can adjust based on context
-            difficulty: 'medium', // Optional: can map based on logic
+            text: formattedText,
+            category: data.interviewType === 'behavioral' ? 'behavioral' : data.interviewType === 'logical' ? 'logical-thinking' : 'technical',
+            difficulty: 'medium',
           });
         } else {
           throw new Error(result.message || 'Failed to fetch a question');
