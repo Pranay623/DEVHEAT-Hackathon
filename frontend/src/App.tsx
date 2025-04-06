@@ -35,7 +35,7 @@ const App: React.FC = () => {
         <Route path="/PracticeQuestion" element={<PracticeQuestions />} />
         <Route path="/CareerRoadmap" element={<CareerRoadmap />} />
         <Route path="/spinwheel" element={<SpinWheel />} />
-        <Route path="/recommend" element={<Recommend />} />
+        <Route path="/Recommend" element={<Recommend />} />
         <Route path="/pricing" element={<PricingPlans />} />
         <Route path="/mock-interviews" element={<MockInterviewScreen />} />
         <Route path="/learn-with-ai" element={<LearnWithAI />} />
