@@ -51,6 +51,7 @@ const WizardModal: React.FC<WizardModalProps> = ({ onComplete }) => {
   const handleSubmit = async () => {
     try {
       const token = localStorage.getItem("token");
+      console.log("Token:", token);
       const res = await fetch("https://devheat-hackathon-14ll.vercel.app/api/wizard/complete-profile", {
         method: "POST",
         headers: {
