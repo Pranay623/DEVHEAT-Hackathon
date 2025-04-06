@@ -61,7 +61,7 @@ const LoginSignup: React.FC = () => {
   
     try {
       // Check if user exists in the database
-      const response = await fetch('http://localhost:5000/api/auth/google-login', {
+      const response = await fetch('https://devheat-hackathon-14ll.vercel.app/api/auth/google-login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -73,6 +73,9 @@ const LoginSignup: React.FC = () => {
   
       if (response.ok) {
         console.log('Google Login Successful:', data);
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('userID', data.userId);
+        localStorage.setItem('wizard', data.WizardCompleted); 
         navigate('/dashboard'); 
       } else {
         console.error('Error:', data.message);
