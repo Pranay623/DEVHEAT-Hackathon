@@ -232,9 +232,9 @@ const Stats: React.FC = () => {
                     label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
                     labelLine={false}
                   >
-                    {interviewDistribution.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
+                    {interviewDistribution.map((_, index) => (
+  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+))}
                   </Pie>
                   <Tooltip 
                     contentStyle={{ backgroundColor: '#1e1e1e', borderColor: '#333', borderRadius: '4px' }}

@@ -86,20 +86,25 @@ router.post("/login",loginRateLimiter, async (req, res) => {
 
 
 router.post('/google-login', async (req, res) => {
-  const { email, name} = req.body;
+  const { email, name } = req.body;
 
   try {
     let user = await User.findOne({ email });
 
     if (!user) {
-      // If user does not exist, register them
-      user = new User({ name, email, password: '',profileCompleted: true });
-      user.profileCompleted = true; // Mark as completed
+      user = new User({ name, email, password: 'google-auth-user', profileCompleted: true });
       await user.save();
     }
 
-    // Create a session or token for authentication (if required)
-    res.status(200).json({ message: 'Login Successful', user });
+    // Generate token
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+
+    res.status(200).json({
+      message: 'Login Successful',
+      token,
+      userId: user._id,
+      WizardCompleted: user.WizardCompleted || false,
+    });
   } catch (error) {
     res.status(500).json({ message: 'Server Error', error });
   }

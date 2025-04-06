@@ -18,7 +18,7 @@ import Settings from './pages/Settings';
 import InterviewResources from './pages/InterviewResources';
 import PracticeQuestions from './pages/PracticeQuestions';
 import CareerRoadmap from './pages/CareerRoadmap';
-
+import About from './pages/About';
 const App: React.FC = () => {
   return (
     <BrowserRouter>
@@ -40,6 +40,7 @@ const App: React.FC = () => {
         <Route path="/mock-interviews" element={<MockInterviewScreen />} />
         <Route path="/learn-with-ai" element={<LearnWithAI />} />
         <Route path="/free-mock-test" element={<FreeMockTest />} />
+        <Route path="/about" element={<About />} />
         {/* Add other routes as needed */}
       </Routes>
     </BrowserRouter>
