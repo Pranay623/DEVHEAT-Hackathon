@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mic, AlertCircle, ChevronLeft, ChevronRight, Clock, Send } from 'react-feather';
+import ReactMarkdown from 'react-markdown';
 
 interface Question {
   id: number;
@@ -172,9 +173,9 @@ const InterviewSession: React.FC<InterviewSessionProps> = ({
             </div>
             
             {/* Question text */}
-            <h3 className="text-white text-lg font-medium leading-relaxed">
-              {currentQuestion.text}
-            </h3>
+            <div className="prose prose-invert max-w-none text-white">
+  <ReactMarkdown>{currentQuestion.text}</ReactMarkdown>
+</div>
           </motion.div>
         </AnimatePresence>
         
