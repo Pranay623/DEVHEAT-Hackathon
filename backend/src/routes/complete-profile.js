@@ -4,7 +4,7 @@ import authenticateUser from "../middleware/authenticate.js";
 
 const router = express.Router();
 
-router.post("/complete-profile", authenticateUser, async (req, res) => {
+router.post("/complete-profile", async (req, res) => {
   const userId = req.user.id;
   const { jobRole, experience, targetCompany, level } = req.body;
 

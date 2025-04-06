@@ -144,4 +144,4 @@ function getCategoryIcon(categoryId: string, size: number = 14) {
   }
 }
 
-export default RelatedQuestions;
+export default RelatedQuestions;  
