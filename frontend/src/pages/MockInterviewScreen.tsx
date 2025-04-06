@@ -75,55 +75,48 @@ const MockInterviewScreen: React.FC = () => {
     setSetupData(data);
     setLoading(true);
     setError(null);
-    
+  
     try {
-      // In a real app, you'd call your ML service here
-      // For demo purposes, we'll simulate an API call with mock data
-      const mockQuestions: Question[] = [
-        {
-          id: 1,
-          text: `As a ${data.role} at ${data.company}, can you explain a complex technical challenge you faced and how you resolved it?`,
-          category: 'problem-solving',
-          difficulty: 'medium'
-        },
-        {
-          id: 2,
-          text: `Describe your experience with ${data.interviewType === 'technical' ? 'system design principles' : 'team conflicts'} and how you've applied them in your previous roles.`,
-          category: data.interviewType === 'technical' ? 'system-design' : 'behavioral',
-          difficulty: 'hard'
-        },
-        {
-          id: 3,
-          text: `What do you consider your biggest achievement in your previous ${data.experience} level role?`,
-          category: 'experience',
-          difficulty: 'medium'
-        },
-        {
-          id: 4,
-          text: `How do you stay updated with the latest trends in ${data.role}?`,
-          category: 'professional-growth',
-          difficulty: 'easy'
-        },
-        {
-          id: 5,
-          text: `Given your ${data.experience} experience level, how would you approach mentoring junior team members at ${data.company}?`,
-          category: 'leadership',
-          difficulty: 'medium'
+      const questions: Question[] = [];
+  
+      // Fetch 5 questions dynamically from the API (or more if needed)
+      for (let i = 0; i < 5; i++) {
+        const response = await fetch('https://job-e0jn.onrender.com/mock-interview', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            role: data.role,
+            experience_level: data.experience,
+            target_company: data.company,
+          }),
+        });
+  
+        const result = await response.json();
+  
+        if (response.ok && result.question) {
+          questions.push({
+            id: i + 1,
+            text: result.question,
+            category: 'technical', // You can adjust based on context
+            difficulty: 'medium', // Optional: can map based on logic
+          });
+        } else {
+          throw new Error(result.message || 'Failed to fetch a question');
         }
-      ];
-      
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      setQuestions(mockQuestions);
+      }
+  
+      setQuestions(questions);
       setStep('session');
-    } catch (err) {
-      console.error('Error generating questions:', err);
-      setError('Failed to generate interview questions. Please try again.');
+    } catch (err: any) {
+      console.error('Error fetching interview questions:', err);
+      setError('Failed to fetch interview questions. Please try again.');
     } finally {
       setLoading(false);
     }
   };
+  
 
   const handleAnswerSubmit = (questionId: number, text: string, timeSpent: number) => {
     setAnswers(prev => [...prev, { questionId, text, timeSpent }]);

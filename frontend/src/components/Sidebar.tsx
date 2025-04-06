@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   Home, BarChart2, FileText, Award, User, Settings, 
@@ -13,6 +14,25 @@ const Sidebar = () => {
   const [isLargeScreen, setIsLargeScreen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const USER_ID = localStorage.getItem('userID');
+    const [userData, setUserData] = React.useState<any>(null);
+  
+    useEffect(()=>{
+      const fetchUserData = async () => {
+        try {
+          const response = await fetch(`https://devheat-hackathon-14ll.vercel.app/api/getuser/user/${USER_ID}`);
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          const data = await response.json();
+          console.log(data);
+          setUserData(data);
+        } catch (err) {
+          console.error("Failed to fetch user data:", err);
+        }
+      };
+      fetchUserData();
+    },[])
 
 const handleLogout = () => {
   localStorage.clear();
@@ -51,12 +71,12 @@ const handleLogout = () => {
     {
       name: 'Tests',
       icon: <FileText size={20} />,
-      path: '/tests',
+      path: '/mock-interviews',
     },
     {
       name: 'Credits',
       icon: <Award size={20} />,
-      path: '/credits',
+      path: '/spinwheel',
     },
     {
       name: 'Settings',
@@ -139,7 +159,7 @@ const handleLogout = () => {
             </div>
             {shouldShowText && (
               <div className="ml-3">
-                <div className="font-medium">John Doe</div>
+                <div className="font-medium">{userData?.name || "Loading"}</div>
                 <div className="text-xs text-gray-400">Premium Member</div>
               </div>
             )}

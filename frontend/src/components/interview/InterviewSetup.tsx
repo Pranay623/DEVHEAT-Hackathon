@@ -22,6 +22,7 @@ const InterviewSetup: React.FC<InterviewSetupProps> = ({ onComplete, remainingCr
   const [company, setCompany] = useState<string>('');
   const [interviewType, setInterviewType] = useState<InterviewType>('behavioral');
   const [step, setStep] = useState<number>(1);
+  const userId = localStorage.getItem('userID'); 
   
   const handleNextStep = () => {
     if (step === 1 && role && experience && company) {
@@ -29,14 +30,42 @@ const InterviewSetup: React.FC<InterviewSetupProps> = ({ onComplete, remainingCr
     }
   };
   
-  const handleSubmit = () => {
-    onComplete({
-      role,
-      experience,
-      company,
-      interviewType
-    });
+  const handleSubmit = async () => {
+    try {
+      // Call the deduct API before continuing
+      const res = await fetch("https://devheat-hackathon-14ll.vercel.app/api/wheel/deduct-credits", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          // Add auth header if using JWT
+          // "Authorization": `Bearer ${yourToken}`
+        },
+        body: JSON.stringify({ userId }) // make sure userId is accessible in this scope
+      });
+  
+      const data = await res.json();
+  
+      if (!res.ok) {
+        alert(data.message || "Failed to deduct credits");
+        return;
+      }
+  
+      console.log("Deduction successful:", data);
+  
+      // Proceed only if deduction was successful
+      onComplete({
+        role,
+        experience,
+        company,
+        interviewType
+      });
+      
+    } catch (error) {
+      console.error("Error during deduction:", error);
+      alert("An error occurred. Please try again.");
+    }
   };
+  
   
   const jobRoles = [
     'Software Engineer',
@@ -75,7 +104,7 @@ const InterviewSetup: React.FC<InterviewSetupProps> = ({ onComplete, remainingCr
       <div className="bg-purple-900/20 border border-purple-500/30 rounded-lg p-4 mb-6">
         <p className="text-purple-200 text-sm flex items-center">
           <HelpCircle size={16} className="mr-2 text-purple-400" />
-          <span>This interview will use <span className="font-bold">30 credits</span>. You have {remainingCredits} credits available.</span>
+          <span>This interview will use <span className="font-bold">50 credits</span>. You have {remainingCredits} credits available.</span>
         </p>
       </div>
       
