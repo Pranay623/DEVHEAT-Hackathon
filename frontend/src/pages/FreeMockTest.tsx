@@ -200,44 +200,362 @@ const FreeMockTest: React.FC = () => {
 
   // Mock questions for the test
   const getMockQuestions = (): Question[] => {
-    return [
-      {
-        text: "What hook would you use to run side effects in a React component?",
-        options: ["useState", "useEffect", "useContext", "useReducer"],
-        correctIndex: 1,
-        explanation: "useEffect is the React hook designed to handle side effects such as data fetching, subscriptions, or manually changing the DOM. It runs after render and can be configured to run on specific dependency changes.",
-      },
-      {
-        text: "Which of the following is NOT a JavaScript primitive type?",
-        options: ["String", "Boolean", "Array", "Number"],
-        correctIndex: 2,
-        explanation: "Arrays are objects in JavaScript, not primitive types. The JavaScript primitive types are: String, Number, Boolean, null, undefined, Symbol, and BigInt.",
-      },
-      {
-        text: "What is the time complexity of searching in a balanced binary search tree?",
-        options: ["O(1)", "O(log n)", "O(n)", "O(n log n)"],
-        correctIndex: 1,
-        explanation: "The time complexity of searching in a balanced binary search tree is O(log n) because each comparison allows you to eliminate half of the remaining tree.",
-      },
-      {
-        text: "Which HTTP status code represents a successful response?",
-        options: ["200", "404", "500", "302"],
-        correctIndex: 0,
-        explanation: "200 OK indicates that the request has succeeded. 404 means Not Found, 500 is Internal Server Error, and 302 is Found (typically used for redirections).",
-      },
-      {
-        text: "In React, what is the purpose of the key prop when rendering lists?",
-        options: [
-          "It's required for all JSX elements",
-          "It helps React identify which items have changed, been added, or removed",
-          "It sets the CSS z-index for the element",
-          "It's used to pass data from parent to child component",
-        ],
-        correctIndex: 1,
-        explanation: "Keys help React identify which items have changed, been added, or been removed from lists. Keys should be given to the elements inside the array to give the elements a stable identity.",
-      },
-    ];
+    if (!selectedTest) return [];
+  
+    switch (selectedTest.id) {
+      case 'react-basics':
+        return [
+          {
+            text: "What hook would you use to run side effects in a React component?",
+            options: ["useState", "useEffect", "useContext", "useReducer"],
+            correctIndex: 1,
+            explanation: "useEffect is used for side effects like fetching data or updating the DOM.",
+          },
+          {
+            text: "Which prop is used to give a unique identity to elements in a list?",
+            options: ["id", "key", "ref", "index"],
+            correctIndex: 1,
+            explanation: "The 'key' prop helps React identify which items changed.",
+          },
+          {
+            text: "What does the useState hook return?",
+            options: ["An object", "An array", "A function", "A string"],
+            correctIndex: 1,
+            explanation: "useState returns an array with the state and a function to update it.",
+          },
+          {
+            text: "What is JSX?",
+            options: [
+              "A templating language",
+              "A syntax extension for JavaScript",
+              "A CSS preprocessor",
+              "A backend language",
+            ],
+            correctIndex: 1,
+            explanation: "JSX is a syntax extension that allows writing HTML in React.",
+          },
+          {
+            text: "Which hook is used for managing global state in React?",
+            options: ["useEffect", "useMemo", "useContext", "useCallback"],
+            correctIndex: 2,
+            explanation: "useContext is used for accessing global state via Context API.",
+          },
+        ];
+  
+      case 'js-advanced':
+        return [
+          {
+            text: "What is a closure in JavaScript?",
+            options: [
+              "A function that returns another function",
+              "A function with access to its outer function’s scope",
+              "A function that executes immediately",
+              "None of the above",
+            ],
+            correctIndex: 1,
+            explanation: "Closures allow functions to access variables from an enclosing scope.",
+          },
+          {
+            text: "What will be the output of 'typeof NaN'?",
+            options: ["NaN", "number", "undefined", "object"],
+            correctIndex: 1,
+            explanation: "Even though it's 'Not-a-Number', typeof NaN is 'number'.",
+          },
+          {
+            text: "Which method converts a JSON string into a JavaScript object?",
+            options: ["JSON.stringify", "JSON.parse", "JSON.objectify", "JSON.decode"],
+            correctIndex: 1,
+            explanation: "JSON.parse converts a JSON string into a JavaScript object.",
+          },
+          {
+            text: "What does 'this' keyword refer to in a regular function?",
+            options: [
+              "The current function",
+              "The global object",
+              "The object that owns the function",
+              "undefined",
+            ],
+            correctIndex: 2,
+            explanation: "'this' refers to the calling object unless in strict mode.",
+          },
+          {
+            text: "Which of these creates a deep copy of an object?",
+            options: ["Object.assign", "Spread operator", "JSON methods", "= assignment"],
+            correctIndex: 2,
+            explanation: "JSON.parse(JSON.stringify(obj)) can be used for deep copying (with limitations).",
+          },
+        ];
+  
+      case 'node-express':
+        return [
+          {
+            text: "Which method is used to create a new Express application?",
+            options: ["express.create()", "express()", "new Express()", "express.init()"],
+            correctIndex: 1,
+            explanation: "`express()` initializes an Express app instance.",
+          },
+          {
+            text: "Which HTTP verb is used to update a resource?",
+            options: ["GET", "POST", "PUT", "DELETE"],
+            correctIndex: 2,
+            explanation: "`PUT` is typically used for updating existing resources.",
+          },
+          {
+            text: "Which middleware is used to parse JSON bodies in Express?",
+            options: ["bodyParser.json()", "express.json()", "jsonParser()", "urlencoded()"],
+            correctIndex: 1,
+            explanation: "express.json() is used to parse incoming JSON requests.",
+          },
+          {
+            text: "How do you define a route in Express?",
+            options: [
+              "app.use(path, callback)",
+              "app.route(path)",
+              "app.get(path, callback)",
+              "express.get(path, callback)",
+            ],
+            correctIndex: 2,
+            explanation: "app.get() defines a GET route in Express.",
+          },
+          {
+            text: "Which status code means 'Not Found'?",
+            options: ["200", "201", "404", "500"],
+            correctIndex: 2,
+            explanation: "404 means the requested resource was not found.",
+          },
+        ];
+  
+      case 'database-design':
+        return [
+          {
+            text: "What is a primary key in a database?",
+            options: [
+              "A unique identifier for each record",
+              "A field used to link tables",
+              "A field that stores large files",
+              "A backup of the database",
+            ],
+            correctIndex: 0,
+            explanation: "The primary key uniquely identifies each row in a table.",
+          },
+          {
+            text: "Which of these is a NoSQL database?",
+            options: ["MySQL", "PostgreSQL", "MongoDB", "SQLite"],
+            correctIndex: 2,
+            explanation: "MongoDB is a popular NoSQL database.",
+          },
+          {
+            text: "What does normalization do?",
+            options: [
+              "Adds redundancy",
+              "Organizes data efficiently",
+              "Encrypts data",
+              "Backs up data",
+            ],
+            correctIndex: 1,
+            explanation: "Normalization reduces redundancy and improves data integrity.",
+          },
+          {
+            text: "What is a foreign key?",
+            options: [
+              "A duplicate of a primary key",
+              "A key used to encrypt data",
+              "A key used to link two tables",
+              "A reserved keyword",
+            ],
+            correctIndex: 2,
+            explanation: "Foreign keys establish relationships between tables.",
+          },
+          {
+            text: "Which command retrieves data from a table?",
+            options: ["INSERT", "UPDATE", "SELECT", "DELETE"],
+            correctIndex: 2,
+            explanation: "SELECT is used to fetch data from a table.",
+          },
+        ];
+  
+      case 'dsa-basics':
+        return [
+          {
+            text: "What is the time complexity of binary search?",
+            options: ["O(n)", "O(log n)", "O(n^2)", "O(1)"],
+            correctIndex: 1,
+            explanation: "Binary search cuts the search space in half each time.",
+          },
+          {
+            text: "Which data structure uses LIFO?",
+            options: ["Queue", "Stack", "Linked List", "Tree"],
+            correctIndex: 1,
+            explanation: "Stack stands for Last In, First Out.",
+          },
+          {
+            text: "Which data structure is used in BFS?",
+            options: ["Stack", "Queue", "Set", "Array"],
+            correctIndex: 1,
+            explanation: "Breadth-First Search uses a Queue.",
+          },
+          {
+            text: "What’s the time complexity of bubble sort?",
+            options: ["O(n log n)", "O(n)", "O(n^2)", "O(1)"],
+            correctIndex: 2,
+            explanation: "Bubble sort compares and swaps repeatedly, hence O(n²).",
+          },
+          {
+            text: "Which data structure is used for recursion?",
+            options: ["Queue", "Stack", "Array", "Tree"],
+            correctIndex: 1,
+            explanation: "Recursion uses the call stack.",
+          },
+        ];
+  
+      case 'leetcode-medium':
+        return [
+          {
+            text: "Which algorithm is best suited for solving the shortest path in a weighted graph?",
+            options: ["DFS", "BFS", "Dijkstra’s Algorithm", "Greedy Algorithm"],
+            correctIndex: 2,
+            explanation: "Dijkstra’s Algorithm is efficient for shortest paths in weighted graphs.",
+          },
+          {
+            text: "Which problem category is dynamic programming often used for?",
+            options: ["Searching", "Sorting", "Optimization", "Traversal"],
+            correctIndex: 2,
+            explanation: "DP solves problems by breaking them into overlapping subproblems.",
+          },
+          {
+            text: "What’s the optimal time complexity to find the median of two sorted arrays?",
+            options: ["O(n)", "O(log n)", "O(n log n)", "O(n²)"],
+            correctIndex: 1,
+            explanation: "It can be done in O(log n) using binary search techniques.",
+          },
+          {
+            text: "Which algorithm is used in topological sorting?",
+            options: ["DFS", "BFS", "Union-Find", "Bellman-Ford"],
+            correctIndex: 0,
+            explanation: "DFS is typically used for topological sort of a DAG.",
+          },
+          {
+            text: "Which data structure supports O(1) average time for insertion and lookup?",
+            options: ["Array", "Linked List", "Stack", "HashMap"],
+            correctIndex: 3,
+            explanation: "HashMaps provide average constant time complexity for insertion/lookup.",
+          },
+        ];
+  
+      case 'system-basics':
+        return [
+          {
+            text: "What does horizontal scaling mean?",
+            options: [
+              "Adding more power to a single machine",
+              "Distributing load across multiple machines",
+              "Caching frequently used data",
+              "Optimizing the database schema",
+            ],
+            correctIndex: 1,
+            explanation: "Horizontal scaling means adding more servers to share the load.",
+          },
+          {
+            text: "What is the purpose of caching?",
+            options: ["To store backups", "To optimize disk usage", "To reduce response time", "To prevent scaling"],
+            correctIndex: 2,
+            explanation: "Caching helps reduce the need to repeatedly compute or fetch data.",
+          },
+          {
+            text: "What is a load balancer?",
+            options: [
+              "A database optimizer",
+              "A firewall",
+              "A device that distributes traffic",
+              "A cloud function",
+            ],
+            correctIndex: 2,
+            explanation: "Load balancers distribute incoming network traffic.",
+          },
+          {
+            text: "What does a CDN do?",
+            options: [
+              "Creates backups",
+              "Delivers content fast via edge servers",
+              "Manages databases",
+              "Encrypts API data",
+            ],
+            correctIndex: 1,
+            explanation: "CDNs deliver content from servers nearest to the user.",
+          },
+          {
+            text: "What is vertical scaling?",
+            options: [
+              "Adding more machines",
+              "Adding more CPU/RAM to a server",
+              "Reducing latency",
+              "Decreasing disk usage",
+            ],
+            correctIndex: 1,
+            explanation: "Vertical scaling means enhancing a machine's capacity.",
+          },
+        ];
+  
+      case 'distributed-systems':
+        return [
+          {
+            text: "What is CAP theorem in distributed systems?",
+            options: [
+              "Consistency, Accuracy, Performance",
+              "Consistency, Availability, Partition tolerance",
+              "Cache, Availability, Performance",
+              "Concurrency, Accuracy, Partitioning",
+            ],
+            correctIndex: 1,
+            explanation: "CAP theorem states a distributed system can only guarantee two of the three: Consistency, Availability, and Partition tolerance.",
+          },
+          {
+            text: "What is sharding in databases?",
+            options: [
+              "Creating a backup",
+              "Splitting database into smaller parts",
+              "Encrypting data",
+              "Indexing data",
+            ],
+            correctIndex: 1,
+            explanation: "Sharding is a method for distributing data across multiple machines.",
+          },
+          {
+            text: "Which system design principle helps handle high loads?",
+            options: ["Sharding", "Batching", "Load Balancing", "All of the above"],
+            correctIndex: 3,
+            explanation: "All these techniques help in improving scalability and performance.",
+          },
+          {
+            text: "What is eventual consistency?",
+            options: [
+              "Data is always consistent",
+              "Data becomes consistent over time",
+              "Data never changes",
+              "Data consistency depends on schema",
+            ],
+            correctIndex: 1,
+            explanation: "Eventually consistent systems may not immediately reflect all updates but will eventually do so.",
+          },
+          {
+            text: "What does a consensus algorithm do?",
+            options: [
+              "Resolves network issues",
+              "Encrypts data",
+              "Helps nodes agree on values",
+              "Creates backups",
+            ],
+            correctIndex: 2,
+            explanation: "Consensus algorithms help multiple systems agree on a single data value/state.",
+          },
+        ];
+  
+      default:
+        return [];
+    }
   };
+  
+  
 
   // Calculate score
   const calculateScore = () => {

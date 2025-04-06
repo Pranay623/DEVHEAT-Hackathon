@@ -8,9 +8,10 @@ import InterviewCompletion from '../components/interview/InterviewCompletion';
 import InterviewFeedback from '../components/interview/InterviewFeedback';
 import { Clock, AlertCircle } from 'react-feather';
 
+
 // Types
 type InterviewStep = 'setup' | 'session' | 'completion' | 'feedback';
-type InterviewType = 'text' | 'voice' | 'behavioral' | 'technical';
+type InterviewType = 'logical' | 'voice' | 'behavioral' | 'technical';
 type ExperienceLevel = 'fresher' | 'intermediate' | 'experienced';
 
 interface SetupData {
@@ -53,6 +54,7 @@ const MockInterviewScreen: React.FC = () => {
   const [remainingCredits, setRemainingCredits] = useState<number>(300);
   
   const userId = localStorage.getItem('userID');
+  
 
   // Fetch user credits on component mount
   useEffect(() => {
@@ -75,55 +77,74 @@ const MockInterviewScreen: React.FC = () => {
     setSetupData(data);
     setLoading(true);
     setError(null);
-    
+  
     try {
-      // In a real app, you'd call your ML service here
-      // For demo purposes, we'll simulate an API call with mock data
-      const mockQuestions: Question[] = [
-        {
-          id: 1,
-          text: `As a ${data.role} at ${data.company}, can you explain a complex technical challenge you faced and how you resolved it?`,
-          category: 'problem-solving',
-          difficulty: 'medium'
-        },
-        {
-          id: 2,
-          text: `Describe your experience with ${data.interviewType === 'technical' ? 'system design principles' : 'team conflicts'} and how you've applied them in your previous roles.`,
-          category: data.interviewType === 'technical' ? 'system-design' : 'behavioral',
-          difficulty: 'hard'
-        },
-        {
-          id: 3,
-          text: `What do you consider your biggest achievement in your previous ${data.experience} level role?`,
-          category: 'experience',
-          difficulty: 'medium'
-        },
-        {
-          id: 4,
-          text: `How do you stay updated with the latest trends in ${data.role}?`,
-          category: 'professional-growth',
-          difficulty: 'easy'
-        },
-        {
-          id: 5,
-          text: `Given your ${data.experience} experience level, how would you approach mentoring junior team members at ${data.company}?`,
-          category: 'leadership',
-          difficulty: 'medium'
+      const questions: Question[] = [];
+  
+      // Determine API endpoint based on interviewType
+      let apiUrl = 'https://job-e0jn.onrender.com/mock-interview'; // default for technical
+      if (data.interviewType === 'behavioral') {
+        apiUrl = 'https://behaviouranalysisagent.onrender.com/behavioral-interview';
+      } else if (data.interviewType === 'logical') {
+        apiUrl = 'https://logiaclagent-1.onrender.com/logical-ability';
+      }
+  
+      // Fetch 5 questions dynamically
+      for (let i = 0; i < 5; i++) {
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            role: data.role,
+            experience_level: data.experience,
+            target_company: data.company,
+          }),
+        });
+  
+        const result = await response.json();
+  
+        if (response.ok && result.question) {
+          const rawQuestion = result.question;
+
+            // Basic cleanup utility
+            const formatQuestionText = (text: string) => {
+              // Remove markdown-style **bold** markers
+              let cleaned = text.replace(/\*\*(.*?)\*\*/g, '$1');
+
+              // Replace multiple newlines with just two
+              cleaned = cleaned.replace(/\n{3,}/g, '\n\n');
+
+              // Trim leading/trailing spaces
+              cleaned = cleaned.trim();
+
+              return cleaned;
+            };
+
+            const formattedText = formatQuestionText(rawQuestion);
+
+          questions.push({
+            id: i + 1,
+            text: formattedText,
+            category: data.interviewType === 'behavioral' ? 'behavioral' : data.interviewType === 'logical' ? 'logical-thinking' : 'technical',
+            difficulty: 'medium',
+          });
+        } else {
+          throw new Error(result.message || 'Failed to fetch a question');
         }
-      ];
-      
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      setQuestions(mockQuestions);
+      }
+  
+      setQuestions(questions);
       setStep('session');
-    } catch (err) {
-      console.error('Error generating questions:', err);
-      setError('Failed to generate interview questions. Please try again.');
+    } catch (err: any) {
+      console.error('Error fetching interview questions:', err);
+      setError('Failed to fetch interview questions. Please try again.');
     } finally {
       setLoading(false);
     }
   };
+  
 
   const handleAnswerSubmit = (questionId: number, text: string, timeSpent: number) => {
     setAnswers(prev => [...prev, { questionId, text, timeSpent }]);

@@ -30,4 +30,30 @@ router.post("/spin-result", async (req, res) => {
     }
 });
 
+router.post("/deduct-credits", async (req, res) => {
+    try {
+        const { userId } = req.body;
+
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        // Check if user has enough credits
+        if (user.credits < 50) {
+            return res.status(400).json({ message: "Not enough credits to deduct" });
+        }
+
+        user.credits -= 50;
+        await user.save();
+
+        return res.status(200).json({
+            message: "50 credits deducted successfully",
+            deducted: 50,
+            remainingCredits: user.credits,
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error" });
+    }
+});
+
 export default router;
