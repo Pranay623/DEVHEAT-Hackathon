@@ -50,20 +50,26 @@ const WizardModal: React.FC<WizardModalProps> = ({ onComplete }) => {
 
   const handleSubmit = async () => {
     try {
-      const token = localStorage.getItem("token");
-      console.log("Token:", token);
+      const userId = localStorage.getItem("userID"); // ⬅️ Get userId from localStorage (or however you're storing it)
+      if (!userId) {
+        console.error("User ID is missing");
+        return;
+      }
+  
+      const payload = {
+        ...answers,
+        userId, // ⬅️ Add userId to payload
+      };
+  
       const res = await fetch("https://devheat-hackathon-14ll.vercel.app/api/wizard/complete-profile", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(answers),
+        body: JSON.stringify(payload),
       });
-
+  
       if (res.ok) {
-        // const data = await res.json();
-        // console.log("Profile completed:", data);
         onComplete(answers);
       } else {
         const errorData = await res.json();
@@ -73,7 +79,7 @@ const WizardModal: React.FC<WizardModalProps> = ({ onComplete }) => {
       console.error("Submit error:", error);
     }
   };
-
+  
   const renderInput = () => {
     if (currentQuestion.type === "select") {
       return (
