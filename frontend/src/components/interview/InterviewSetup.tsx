@@ -23,8 +23,8 @@ const InterviewSetup: React.FC<InterviewSetupProps> = ({ onComplete, remainingCr
   const [interviewType, setInterviewType] = useState<InterviewType>('behavioral');
   const [step, setStep] = useState<number>(1);
   const userId = localStorage.getItem('userID'); 
-  const [customRole, setCustomRole] = useState('');
-const [customCompany, setCustomCompany] = useState('');
+  const [customRole] = useState('');
+  const [customCompany] = useState('');
   
   const isCustomRoleValid = role !== 'other' || (role === 'other' && role.trim().length > 0);
 const isCustomCompanyValid = company !== 'other' || (company === 'other' && company.trim().length > 0);
