@@ -117,7 +117,7 @@ const Tests: React.FC = () => {
   });
   
   const handleStartTest = (testId: string) => {
-    navigate('/free-mock-test');
+    navigate(`/free-mock-test/${testId}`);
   };
   
   return (
