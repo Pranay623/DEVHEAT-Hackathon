@@ -21,13 +21,13 @@ const Navbar: React.FC = () => {
                     <div className="text-xl font-bold">MockPrep</div>
                     
                     <div className="flex items-center space-x-6 lg:space-x-8">
-                        <div className="flex items-center space-x-1">
+                        {/* <div className="flex items-center space-x-1">
                             <span className="text-gray-400 hover:text-white transition-colors text-sm lg:text-base">Practice</span>
                             <svg className="w-3 h-3 lg:w-4 lg:h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                             </svg>
-                        </div>
-                        <Link to="/resources" className="text-gray-400 hover:text-white transition-colors text-sm lg:text-base">Resources</Link>
+                        </div> */}
+                        <Link to="/about" className="text-gray-400 hover:text-white transition-colors text-sm lg:text-base">About Us</Link>
                         <Link to="/pricing" className="text-gray-400 hover:text-white transition-colors text-sm lg:text-base">Pricing</Link>
                         
                         <button 
