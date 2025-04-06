@@ -96,7 +96,7 @@ const Dashboard: React.FC = () => {
             title="Practice Questions" 
             description="Access thousands of interview questions across various domains and difficulty levels."
             icon={<Activity size={20} />}
-            to="/practice"
+            to="/PracticeQuestion"
             buttonText="Start Practicing"
           />
           
@@ -114,7 +114,7 @@ const Dashboard: React.FC = () => {
             title="Interview Resources" 
             description="Discover helpful articles, tutorials, and guides for your specific role."
             icon={<Command size={20} />}
-            to="/resources"
+            to="/InterviewResouces"
             buttonText="Browse Resources"
             bgColor="bg-gradient-to-br from-emerald-900/30 to-[#1e1e1e]"
             borderColor="border-emerald-900/30"
@@ -124,7 +124,7 @@ const Dashboard: React.FC = () => {
             title="Career Roadmaps" 
             description="Get customized career paths and skills development recommendations."
             icon={<Zap size={20} />}
-            to="/roadmaps"
+            to="/CareerRoadmap"
             buttonText="View Roadmaps"
             bgColor="bg-gradient-to-br from-purple-900/30 to-[#1e1e1e]"
             borderColor="border-purple-900/30"

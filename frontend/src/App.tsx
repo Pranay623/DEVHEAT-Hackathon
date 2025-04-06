@@ -11,6 +11,13 @@ import PricingPlans from './pages/pricing';
 import MockInterviewScreen from './pages/MockInterviewScreen';
 import LearnWithAI from './pages/LearnWithAI';
 import FreeMockTest from './pages/FreeMockTest';
+import Stats from './pages/Stats';
+import Tests from './pages/Tests';
+import Credits from './pages/Credits';
+import Settings from './pages/Settings';
+import InterviewResources from './pages/InterviewResources';
+import PracticeQuestions from './pages/PracticeQuestions';
+import CareerRoadmap from './pages/CareerRoadmap';
 
 const App: React.FC = () => {
   return (
@@ -20,6 +27,13 @@ const App: React.FC = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/Stats" element={<Stats />} />
+        <Route path="/Tests" element={<Tests />} />
+        <Route path="/Credits" element={<Credits />} />
+        <Route path="/Settings" element={<Settings />} />
+        <Route path="/InterviewResouces" element={<InterviewResources />} />
+        <Route path="/PracticeQuestion" element={<PracticeQuestions />} />
+        <Route path="/CareerRoadmap" element={<CareerRoadmap />} />
         <Route path="/spinwheel" element={<SpinWheel />} />
         <Route path="/recommend" element={<Recommend />} />
         <Route path="/pricing" element={<PricingPlans />} />
