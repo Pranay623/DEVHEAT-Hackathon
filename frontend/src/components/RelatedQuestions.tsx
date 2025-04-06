@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, BookOpen, Check,  Code, FileText, Star } from 'react-feather';
+import { ArrowRight, BookOpen, Check, } from 'react-feather';
 import { Link } from 'react-router-dom';
 import { QuestionItem } from '../types/question';
 import { RELATED_QUESTIONS_BY_TAG, RELATED_QUESTIONS_BY_CATEGORY } from '../constants/relatedQuestions';
@@ -131,17 +131,5 @@ const RelatedQuestions: React.FC<RelatedQuestionsProps> = ({
     </div>
   );
 };
-
-// Helper function to get category icon
-function getCategoryIcon(categoryId: string, size: number = 14) {
-  switch(categoryId) {
-    case 'frontend': return <Code size={size} className="mr-1" />;
-    case 'backend': return <FileText size={size} className="mr-1" />;
-    case 'system-design': return <BookOpen size={size} className="mr-1" />;
-    case 'behavioral': return <Star size={size} className="mr-1" />;
-    case 'data-structures': return <Code size={size} className="mr-1" />;
-    default: return null;
-  }
-}
 
 export default RelatedQuestions;
