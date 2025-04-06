@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
-const plans = [
+const monthlyPlans = [
   {
     name: "Creator",
-    price: "$0.00",
-    period: "/month",
+    price: 0,
     description: "Ideal for solo creators and small teams",
     features: [
       "One user",
@@ -15,12 +15,10 @@ const plans = [
       "Basic analytics",
     ],
     button: "Start for Free",
-    isPopular: false,
   },
   {
     name: "Professional",
-    price: "$449",
-    period: "/month",
+    price: 449,
     description: "Best for growing startups and teams",
     features: [
       "Everything in Creator, plus:",
@@ -30,13 +28,12 @@ const plans = [
       "Team collaboration tools",
     ],
     button: "Sign Up with Professional",
-    isPopular: false,
   },
   {
     name: "Enterprise",
-    price: "$999",
-    period: "/month",
-    description: "Perfect for large enterprises needing advanced features and support",
+    price: 999,
+    description:
+      "Perfect for large enterprises needing advanced features and support",
     features: [
       "Everything in Pro, plus:",
       "Unlimited user seats",
@@ -45,13 +42,34 @@ const plans = [
       "Customizable workflows",
     ],
     button: "Sign Up with Enterprise",
-    isPopular: false,
   },
 ];
 
 const PricingSection: React.FC = () => {
+  const [isYearly, setIsYearly] = useState(false);
+  const navigate = useNavigate();
+
+  const plans = monthlyPlans.map((plan) => {
+    const yearlyPrice = plan.price * 12 * 0.85; // 15% discount on yearly
+    return {
+      ...plan,
+      displayPrice: isYearly
+        ? `$${yearlyPrice.toFixed(2)}`
+        : `$${plan.price}`,
+      period: isYearly ? "/year (15% off)" : "/month",
+    };
+  });
+
   return (
     <div className="min-h-screen w-full bg-[#0f0f0f] py-20 px-4 text-white flex flex-col items-center">
+      {/* Back to Home Button */}
+      <button
+        onClick={() => navigate("/")}
+        className="fixed top-4 left-4 bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-lg shadow-lg transition-all duration-300 z-50"
+      >
+        ← Back to Home
+      </button>
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -65,10 +83,24 @@ const PricingSection: React.FC = () => {
           Explore our AI plans for your business growth and success.
         </p>
         <div className="mt-4 inline-flex bg-[#1e1e1e] rounded-full border border-gray-700 p-1">
-          <button className="text-xs md:text-sm px-4 py-1 text-white rounded-full bg-[#3b3b3b]">
+          <button
+            className={`text-xs md:text-sm px-4 py-1 rounded-full transition-all duration-200 ${
+              !isYearly
+                ? "bg-[#3b3b3b] text-white"
+                : "text-gray-400 hover:text-white"
+            }`}
+            onClick={() => setIsYearly(false)}
+          >
             Monthly
           </button>
-          <button className="text-xs md:text-sm px-4 py-1 text-gray-400 rounded-full">
+          <button
+            className={`text-xs md:text-sm px-4 py-1 rounded-full transition-all duration-200 ${
+              isYearly
+                ? "bg-[#3b3b3b] text-white"
+                : "text-gray-400 hover:text-white"
+            }`}
+            onClick={() => setIsYearly(true)}
+          >
             Yearly
           </button>
         </div>
@@ -90,7 +122,9 @@ const PricingSection: React.FC = () => {
             </div>
 
             <div className="mb-6">
-              <span className="text-3xl font-bold text-purple-400">{plan.price}</span>
+              <span className="text-3xl font-bold text-purple-400">
+                {plan.displayPrice}
+              </span>
               <span className="text-gray-400 ml-1">{plan.period}</span>
             </div>
 
