@@ -1,306 +1,268 @@
-import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import {
-  Mail,
-  Clock,
-  Briefcase,
-  Rocket,
-  BarChart3,
-  Star,
-  Target,
-} from "lucide-react";
-import {
-  ResponsiveContainer,
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  TooltipProps,
-} from "recharts";
+import React, { useEffect, useState } from 'react';
+import DashboardLayout from '../components/DashboardLayout';
+import { motion } from 'framer-motion';
+import { User, Mail, Phone, Calendar, Award, CheckCircle, Edit, BookOpen, Briefcase } from 'react-feather';
 
-// Replace with real chart data or fetch it
-const performanceData = [
-  { name: "Jan", score: 65 },
-  { name: "Feb", score: 59 },
-  { name: "Mar", score: 80 },
-  { name: "Apr", score: 81 },
-  { name: "May", score: 76 },
-  { name: "Jun", score: 85 },
-  { name: "Jul", score: 90 },
-];
+interface UserProfile {
+  name: string;
+  email: string;
+  phone: string;
+  createdAt: string;
+  jobRole: string;
+  completedTests: number;
+  totalInterviews: number;
+  credits: number;
+  skills: string[];
+}
 
-export default function Profile() {
-  const USER_ID = localStorage.getItem("userID");
-  const [userData, setUserData] = useState<any>(null);
+const Profile: React.FC = () => {
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchUserData = async () => {
+    // Fetch user data from API
+    const fetchUserProfile = async () => {
+      setLoading(true);
       try {
-        const response = await fetch(
-          `https://devheat-hackathon-14ll.vercel.app/api/getuser/user/${USER_ID}`
-        );
-        if (!response.ok) throw new Error("Network response was not ok");
-        const data = await response.json();
-        setUserData(data);
-      } catch (err) {
-        console.error("Failed to fetch user data:", err);
+        const USER_ID = localStorage.getItem('userID');
+        if (!USER_ID) throw new Error('User ID not found');
+        
+        const response = await fetch(`https://devheat-hackathon-14ll.vercel.app/api/getuser/user/${USER_ID}`);
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch profile');
+        }
+        
+        const userData = await response.json();
+        
+        // Fetch additional data like credits
+        const creditsResponse = await fetch(`https://devheat-hackathon-14ll.vercel.app/api/credits/points/${USER_ID}`);
+        const creditsData = await creditsResponse.json();
+        
+        setProfile({
+          name: userData.name || 'User',
+          email: userData.email || 'user@example.com',
+          phone: userData.phone || '+1 123 456 7890',
+          createdAt: userData.createdAt || new Date().toISOString(),
+          jobRole: userData.jobRole || 'Software Developer',
+          completedTests: userData.completedTests || 5,
+          totalInterviews: userData.totalInterviews || 7,
+          credits: creditsData?.credits || 300,
+          skills: userData.skills || ['React', 'JavaScript', 'TypeScript', 'Node.js', 'CSS']
+        });
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+        // Set fallback data for demo
+        setProfile({
+          name: 'John Doe',
+          email: 'john.doe@example.com',
+          phone: '+1 234 567 890',
+          createdAt: '2023-10-15T00:00:00Z',
+          jobRole: 'Frontend Developer',
+          completedTests: 5,
+          totalInterviews: 7,
+          credits: 300,
+          skills: ['React', 'JavaScript', 'TypeScript', 'Node.js', 'CSS']
+        });
+      } finally {
+        setLoading(false);
       }
     };
-    fetchUserData();
+    
+    fetchUserProfile();
   }, []);
 
-  if (!userData) {
+  if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-black text-white">
-        Loading...
-      </div>
+      <DashboardLayout>
+        <div className="flex justify-center items-center h-[70vh]">
+          <div className="w-12 h-12 border-4 border-t-purple-500 border-r-transparent border-b-transparent border-l-transparent rounded-full animate-spin"></div>
+        </div>
+      </DashboardLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0c0f1c] via-[#090c19] to-[#0c0c0c] text-white px-[8rem] py-16 font-sans flex flex-col lg:flex-row gap-16">
-      {/* Left Panel */}
-      <motion.div
-        initial={{ opacity: 0, x: -40 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.8 }}
-        className="flex-1 space-y-10 max-w-2xl"
-      >
-        <h1 className="text-5xl font-extrabold tracking-tight bg-gradient-to-r from-teal-300 to-purple-300 bg-clip-text text-transparent">
-          Hello, {userData.name?.toUpperCase()}
-        </h1>
-        <p className="text-2xl text-gray-300">
-          Ready to grow your skills and reach{" "}
-          <span className="text-teal-300 font-bold">
-            {userData.targetCompany || "your dream company"}
-          </span>
-          ?
-        </p>
-        <p className="text-lg text-gray-400 border-l-4 border-purple-500 pl-4 leading-relaxed">
-          Continuous learning is your superpower. Let’s make progress every day
-          with a clear focus and passion.
-        </p>
-
-        <Section title="👤 Personal Info">
-          <InfoRow
-            icon={<Mail size={18} />}
-            label="Email"
-            value={userData.email}
-          />
-          <InfoRow
-            icon={<Clock size={18} />}
-            label="Joined On"
-            value={new Date(userData.createdAt).toLocaleDateString()}
-          />
-        </Section>
-
-        <Section title="🎯 Career Goals">
-          <InfoRow
-            icon={<Briefcase size={18} />}
-            label="Role"
-            value={userData.jobRole}
-          />
-          <InfoRow
-            icon={<BarChart3 size={18} />}
-            label="Experience"
-            value={`${userData.experience || 0} year(s)`}
-          />
-          <InfoRow
-            icon={<Rocket size={18} />}
-            label="Target Company"
-            value={userData.targetCompany}
-          />
-          <InfoRow
-            icon={<Star size={18} />}
-            label="Skill Level"
-            value={userData.level}
-          />
-        </Section>
-
-        <Section title="📊 Account Stats">
-          <InfoRow
-            icon={<CheckIcon profileCompleted={userData.profileCompleted} />}
-            label="Profile Status"
-            value={userData.profileCompleted ? "Completed" : "Incomplete"}
-          />
-          <InfoRow
-            icon={<Target size={18} />}
-            label="Credits"
-            value={`${userData.credits || 0} pts`}
-          />
-        </Section>
-      </motion.div>
-
-      {/* Right Panel */}
-      <motion.div
-        initial={{ opacity: 0, x: 40 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.8 }}
-        className="flex-1 max-w-xl space-y-8 bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl p-10 shadow-2xl"
-      >
-        <div>
-          <p className="text-sm uppercase text-gray-400 mb-2">
-            Quote of the Day
-          </p>
-          <p className="text-2xl italic text-purple-100 leading-relaxed">
-            “Success isn’t always about greatness. It’s about consistency.
-            Consistent hard work leads to success.”
-          </p>
-        </div>
-
-        {/* Profile Completion Bar */}
-        <div className="mt-4">
-          <p className="text-sm mb-2 text-gray-400">Profile Completion</p>
-          <div className="w-full bg-gray-700 rounded-full h-3">
-            <div
-              className={`h-3 rounded-full transition-all duration-500 ${
-                userData.profileCompleted
-                  ? "bg-gradient-to-r from-green-400 to-teal-400"
-                  : "bg-gradient-to-r from-red-400 to-yellow-400"
-              }`}
-              style={{
-                width: userData.profileCompleted ? "100%" : "40%",
-              }}
-            ></div>
+    <DashboardLayout>
+      <div className="flex flex-col md:flex-row gap-6">
+        {/* Left column - Profile info */}
+        <div className="w-full md:w-2/3 space-y-6">
+          {/* Header */}
+          <div className="bg-[#121212] rounded-xl shadow-lg p-6">
+            <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
+              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-purple-600/80 to-purple-800/80 flex items-center justify-center">
+                <User size={40} className="text-white" />
+              </div>
+              
+              <div className="flex-1">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h1 className="text-3xl font-bold text-white">{profile?.name}</h1>
+                    <p className="text-purple-400 mt-1">{profile?.jobRole}</p>
+                  </div>
+                  
+                  <button className="bg-gray-800 hover:bg-gray-700 text-white p-2 rounded-lg flex items-center gap-2 text-sm">
+                    <Edit size={16} /> Edit Profile
+                  </button>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                  <div className="flex items-center text-gray-300">
+                    <Mail size={16} className="mr-2 text-purple-400" />
+                    {profile?.email}
+                  </div>
+                  <div className="flex items-center text-gray-300">
+                    <Phone size={16} className="mr-2 text-purple-400" />
+                    {profile?.phone}
+                  </div>
+                  <div className="flex items-center text-gray-300">
+                    <Calendar size={16} className="mr-2 text-purple-400" />
+                    Member since {new Date(profile?.createdAt || '').toLocaleDateString()}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Stats cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <motion.div 
+              whileHover={{ scale: 1.02 }}
+              className="bg-[#121212] rounded-xl p-4 shadow-lg border border-purple-900/20"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-gray-400 text-sm">Completed Tests</h3>
+                <div className="bg-purple-900/30 p-2 rounded-lg">
+                  <CheckCircle size={16} className="text-purple-400" />
+                </div>
+              </div>
+              <p className="text-3xl font-bold text-white">{profile?.completedTests}</p>
+            </motion.div>
+            
+            <motion.div 
+              whileHover={{ scale: 1.02 }}
+              className="bg-[#121212] rounded-xl p-4 shadow-lg border border-blue-900/20"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-gray-400 text-sm">Mock Interviews</h3>
+                <div className="bg-blue-900/30 p-2 rounded-lg">
+                  <Briefcase size={16} className="text-blue-400" />
+                </div>
+              </div>
+              <p className="text-3xl font-bold text-white">{profile?.totalInterviews}</p>
+            </motion.div>
+            
+            <motion.div 
+              whileHover={{ scale: 1.02 }}
+              className="bg-[#121212] rounded-xl p-4 shadow-lg border border-emerald-900/20"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-gray-400 text-sm">Available Credits</h3>
+                <div className="bg-emerald-900/30 p-2 rounded-lg">
+                  <Award size={16} className="text-emerald-400" />
+                </div>
+              </div>
+              <p className="text-3xl font-bold text-white">{profile?.credits}</p>
+            </motion.div>
+          </div>
+          
+          {/* Skills section */}
+          <div className="bg-[#121212] rounded-xl shadow-lg p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold text-white">Skills</h2>
+              <button className="text-sm text-purple-400 hover:text-purple-300">Edit Skills</button>
+            </div>
+            
+            <div className="flex flex-wrap gap-2">
+              {profile?.skills.map((skill, index) => (
+                <span 
+                  key={index} 
+                  className="bg-purple-900/20 border border-purple-900/40 text-purple-200 px-3 py-1 rounded-full text-sm"
+                >
+                  {skill}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
-
-        {/* Chart */}
-        <StatsChart />
-      </motion.div>
-    </div>
-  );
-}
-
-function Section({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-md space-y-4 shadow-md">
-      <h3 className="text-lg text-purple-300 font-bold">{title}</h3>
-      <div className="space-y-2">{children}</div>
-    </div>
-  );
-}
-
-function InfoRow({
-  icon,
-  label,
-  value,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-}) {
-  return (
-    <div className="flex justify-between items-center text-gray-200">
-      <div className="flex items-center gap-2">
-        {icon}
-        <span className="text-sm">{label}</span>
+        
+        {/* Right column - Learning path and recent activity */}
+        <div className="w-full md:w-1/3 space-y-6">
+          <div className="bg-[#121212] rounded-xl shadow-lg p-6">
+            <div className="flex items-center mb-4">
+              <BookOpen size={18} className="text-blue-400 mr-2" />
+              <h2 className="text-xl font-semibold text-white">Your Learning Path</h2>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="relative">
+                  <div className="w-8 h-8 rounded-full bg-blue-900/50 flex items-center justify-center">
+                    <CheckCircle size={14} className="text-blue-400" />
+                  </div>
+                  <div className="absolute left-1/2 top-full h-4 w-0.5 bg-blue-900/30 transform -translate-x-1/2"></div>
+                </div>
+                <div className="bg-gray-800/50 p-3 rounded-lg w-full">
+                  <p className="text-white text-sm font-medium">Fundamentals</p>
+                  <p className="text-gray-400 text-xs">Completed 2 weeks ago</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-3">
+                <div className="relative">
+                  <div className="w-8 h-8 rounded-full bg-blue-900/50 flex items-center justify-center">
+                    <CheckCircle size={14} className="text-blue-400" />
+                  </div>
+                  <div className="absolute left-1/2 top-full h-4 w-0.5 bg-blue-900/30 transform -translate-x-1/2"></div>
+                </div>
+                <div className="bg-gray-800/50 p-3 rounded-lg w-full">
+                  <p className="text-white text-sm font-medium">Advanced Topics</p>
+                  <p className="text-gray-400 text-xs">Completed 5 days ago</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-3">
+                <div>
+                  <div className="w-8 h-8 rounded-full bg-purple-900/30 border border-purple-500/50 flex items-center justify-center animate-pulse">
+                    <span className="text-purple-400 text-xs">3</span>
+                  </div>
+                </div>
+                <div className="bg-purple-900/20 border border-purple-800/30 p-3 rounded-lg w-full">
+                  <p className="text-white text-sm font-medium">System Design</p>
+                  <p className="text-purple-300 text-xs">In progress - 40% completed</p>
+                  <div className="w-full h-1 bg-gray-800 rounded-full mt-2">
+                    <div className="w-2/5 h-1 bg-purple-500 rounded-full"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <button className="w-full mt-4 bg-blue-900/30 border border-blue-800/40 text-blue-300 py-2 rounded-lg text-sm hover:bg-blue-900/40">
+              Continue Learning
+            </button>
+          </div>
+          
+          <div className="bg-[#121212] rounded-xl shadow-lg p-6">
+            <h2 className="text-xl font-semibold text-white mb-4">Recent Activity</h2>
+            <div className="space-y-4">
+              <div className="border-l-2 border-emerald-500 pl-3">
+                <p className="text-white text-sm">Completed AI Learning Session</p>
+                <p className="text-gray-400 text-xs">2 hours ago</p>
+              </div>
+              <div className="border-l-2 border-blue-500 pl-3">
+                <p className="text-white text-sm">Took React Fundamentals Test</p>
+                <p className="text-gray-400 text-xs">Yesterday</p>
+              </div>
+              <div className="border-l-2 border-purple-500 pl-3">
+                <p className="text-white text-sm">Mock Interview - Frontend Dev</p>
+                <p className="text-gray-400 text-xs">3 days ago</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <span className="text-sm font-semibold text-white">{value}</span>
-    </div>
+    </DashboardLayout>
   );
-}
-
-function CheckIcon({ profileCompleted }: { profileCompleted: boolean }) {
-  return profileCompleted ? (
-    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="limegreen">
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M5 13l4 4L19 7"
-      />
-    </svg>
-  ) : (
-    <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="red">
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M6 18L18 6M6 6l12 12"
-      />
-    </svg>
-  );
-}
-
-const CustomTooltip = ({
-  active,
-  payload,
-  label,
-}: TooltipProps<number, string>) => {
-  if (active && payload && payload.length) {
-    return (
-      <div className="bg-[#121212] p-2 border border-gray-700 rounded-md shadow-lg">
-        <p className="text-xs text-gray-300">{`${label} : ${payload[0].value}%`}</p>
-      </div>
-    );
-  }
-  return null;
 };
 
-function StatsChart() {
-  return (
-    <div className="bg-[#1a1a1a] p-4 rounded-xl shadow-lg mt-[5rem]">
-      <h3 className="text-lg font-bold mb-3 text-white">Performance Trends</h3>
-      <div className="h-[180px]">
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart
-            data={performanceData}
-            margin={{ top: 5, right: 5, left: -20, bottom: 0 }}
-          >
-            <defs>
-              <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#38bdf8" stopOpacity={0.8} />
-                <stop offset="95%" stopColor="#38bdf8" stopOpacity={0.1} />
-              </linearGradient>
-            </defs>
-            <XAxis
-              dataKey="name"
-              stroke="#444"
-              tick={{ fill: "#bbb", fontSize: 10 }}
-              axisLine={{ stroke: "#333" }}
-            />
-            <YAxis
-              stroke="#444"
-              tick={{ fill: "#bbb", fontSize: 10 }}
-              axisLine={{ stroke: "#333" }}
-              domain={[0, 100]}
-            />
-            <CartesianGrid strokeDasharray="3 3" stroke="#2e2e2e" vertical={false} />
-            <Tooltip content={<CustomTooltip />} />
-            <Area
-              type="monotone"
-              dataKey="score"
-              stroke="#38bdf8"
-              strokeWidth={2}
-              fillOpacity={1}
-              fill="url(#colorScore)"
-            />
-          </AreaChart>
-        </ResponsiveContainer>
-      </div>
-      <div className="flex justify-between mt-2 text-xs">
-        <div className="text-center">
-          <p className="text-gray-400">Average</p>
-          <p className="text-white font-bold">76%</p>
-        </div>
-        <div className="text-center">
-          <p className="text-gray-400">Highest</p>
-          <p className="text-white font-bold">90%</p>
-        </div>
-        <div className="text-center">
-          <p className="text-gray-400">Improvement</p>
-          <p className="text-green-400 font-bold">+25%</p>
-        </div>
-      </div>
-    </div>
-  );
-}
+export default Profile;
