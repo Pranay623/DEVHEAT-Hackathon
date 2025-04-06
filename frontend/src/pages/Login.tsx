@@ -40,7 +40,7 @@ const LoginSignup: React.FC = () => {
   
       if (response.ok) {
         console.log(isLogin ? 'Login Successful' : 'Signup Successful', data);
-        navigate(isLogin ? '/dashboard' : '/welcome');
+        navigate(isLogin ? '/dashboard' : '/dashboard');
         localStorage.setItem('token', data.token); // Store the token in local storage
         localStorage.setItem('userID',data.userId)
         localStorage.setItem('wizard',data.WizardCompleted)

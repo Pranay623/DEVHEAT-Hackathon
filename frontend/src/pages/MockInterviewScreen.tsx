@@ -9,6 +9,7 @@ import InterviewFeedback from '../components/interview/InterviewFeedback';
 import { Clock, AlertCircle } from 'react-feather';
 
 
+
 // Types
 type InterviewStep = 'setup' | 'session' | 'completion' | 'feedback';
 type InterviewType = 'logical' | 'voice' | 'behavioral' | 'technical';
@@ -153,52 +154,92 @@ const MockInterviewScreen: React.FC = () => {
   const handleSessionComplete = async () => {
     setLoading(true);
     setError(null);
-    
+  
     try {
-      // In a real app, you'd call your API to analyze answers here
-      // For demo purposes, we'll simulate an API call with mock feedback
-      
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      const mockFeedback: FeedbackData = {
-        overallScore: 78,
-        strengths: [
-          'Clear communication of technical concepts',
-          'Good examples of past experience',
-          'Demonstrated problem-solving abilities'
-        ],
-        improvements: [
-          'Be more concise in responses',
-          'Provide more quantifiable results',
-          'Include more company-specific knowledge'
-        ],
-        suggestions: [
-          { 
-            title: 'Advanced System Design Patterns', 
-            url: 'https://github.com/donnemartin/system-design-primer' 
-          },
-          { 
-            title: 'Behavioral Interview Techniques', 
-            url: 'https://leetcode.com/discuss/interview-experience/' 
+      const apiKey = 'AIzaSyDm1y_Pjd_SGWoZ0kkyVta8tcsnPjFFCiE'; // Replace with your actual API key
+      const geminiEndpoint = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + apiKey;
+  
+      let totalScore = 0;
+    let detailedFeedback: FeedbackData['detailedFeedback'] = [];
+    let laggingAreas: string[] = [];
+
+    for (const answer of answers) {
+      const question = questions.find(q => q.id === answer.questionId);
+      if (!question) continue;
+
+      const prompt = `
+        Analyze the following interview question and user's answer.
+
+        Question: "${question.text}"
+        User's Answer: "${answer.text}"
+
+        1. Evaluate the correctness of the answer out of 100% based on how well it responds to the question.
+        2. Identify the main area this question belongs to (like algorithms, communication, problem-solving, etc.).
+        3. Just output in JSON with fields:
+          {
+            "score": [number from 0-100],
+            "lagging_area": "[if any]",
+            "feedback": "[brief reasoning for the score]"
           }
-        ],
-        detailedFeedback: questions.map(question => ({
-          questionId: question.id,
-          feedback: `Your answer was ${Math.random() > 0.5 ? 'well-structured' : 'informative'} but could benefit from more ${Math.random() > 0.5 ? 'specific examples' : 'technical details'}.`,
-          score: Math.floor(Math.random() * 30) + 65 // Random score between 65-95
-        }))
-      };
-      
-      setFeedback(mockFeedback);
-      setStep('completion');
-    } catch (err) {
-      console.error('Error analyzing answers:', err);
-      setError('Failed to analyze your responses. Please try again.');
-    } finally {
-      setLoading(false);
+      `;
+
+      const response = await fetch(geminiEndpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }]
+        })
+      });
+
+      const data = await response.json();
+      const content = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+      if (!content) {
+        console.warn(`No content returned for question ${question.id}`);
+        continue;
+      }
+
+      try {
+        const parsed = JSON.parse(content.trim());
+        totalScore += parsed.score;
+
+        if (parsed.lagging_area && !laggingAreas.includes(parsed.lagging_area)) {
+          laggingAreas.push(parsed.lagging_area);
+        }
+
+        detailedFeedback.push({
+          questionId: answer.questionId,
+          feedback: parsed.feedback,
+          score: parsed.score,
+        });
+      } catch (parseError) {
+        console.error('Failed to parse Gemini response:', content, parseError);
+        continue;
+      }
     }
-  };
+
+    const averageScore = answers.length > 0 ? Math.round(totalScore / answers.length) : 0;
+
+    const feedbackData: FeedbackData = {
+      overallScore: averageScore,
+      strengths: [], // You can populate this based on score if needed
+      improvements: laggingAreas,
+      suggestions: [], // Optional: add suggestions based on categories
+      detailedFeedback,
+    };
+
+    setFeedback(feedbackData);
+    setStep('completion');
+  } catch (err) {
+    console.error('Error analyzing answers with Gemini:', err);
+    setError('Failed to analyze your responses using Gemini. Please try again.');
+  } finally {
+    setLoading(false);
+  }
+};
+  
 
   const handleViewFeedback = () => {
     setStep('feedback');
